@@ -5,13 +5,14 @@
  * Legajo: VINF011482
  * DNI: 34.434.704
  */
+
 package EstructurasDatos;
 
-public class TablaHashCuadratica {
+public class TablaHashLineal {
     /**
      * Constructor de la tabla hash.
      */
-    public TablaHashCuadratica() {
+    public TablaHashLineal() {
         this(DEFAULT_TABLE_SIZE);
     }
 
@@ -20,7 +21,7 @@ public class TablaHashCuadratica {
      * 
      * @param tamanio el tamaño inicial aproximado.
      */
-    public TablaHashCuadratica(int tamanio) {
+    public TablaHashLineal(int tamanio) {
         almacenarArreglo(tamanio);
         vaciarTabla();
     }
@@ -63,23 +64,20 @@ public class TablaHashCuadratica {
     }
 
     /**
-     * Éste método realiza la resolución por sondeo cuadrático.
+     * Éste método realiza la resolución por sondeo lineal.
      * 
-     * @param x es el ítem que buscamos.
-     * @return devuelve la posición donde termina la búsqueda.
+     * @param x es el dato que buscamos.
+     * @return devuelve la posición donde se terminó la busqueda.
      */
     private int buscarPosicion(Hashable x) {
-
-        // Almacena el número de colisiones
-        int numeroColisiones = 0;
-        // Define la posición que x tendría en el arreglo
+        // Define la posición dentro de la cual se debería guardar el ítem x
         int posActual = x.hash(arreglo.length);
 
         // Mientras que la posición del arreglo tenga datos y el elemento sea x
         while (arreglo[posActual] != null &&
-                arreglo[posActual].elemento.equals(x)) {
+                !arreglo[posActual].elemento.equals(x)) {
             // Computa una nueva posición en el arreglo
-            posActual += 2 * ++numeroColisiones - 1;
+            posActual += 1;
             if (posActual >= arreglo.length)
                 // Implementa el módulo, para mantenerse dentro del arreglo
                 posActual -= arreglo.length;

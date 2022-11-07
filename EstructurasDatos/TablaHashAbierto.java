@@ -1,134 +1,99 @@
+/*
+ * INF389 - Taller de Algoritmos y Estructura de Datos II
+ * Trabajo Práctico N° 2
+ * Nombre: Ariel Gerardo Miele
+ * Legajo: VINF011482
+ * DNI: 34.434.704
+ */
 package EstructurasDatos;
 
-// SeparateChainingHashTable class
-//
-// CONSTRUCTION: with an approximate initial size or default of 101
-//
-// ******************PUBLIC OPERATIONS*********************
-// void insert( x )       --> Insert x
-// void remove( x )       --> Remove x
-// Hashable find( x )     --> Return item that matches x
-// void makeEmpty( )      --> Remove all items
-// int hash( String str, int tableSize )
-//                        --> Static method to hash strings
-// ******************ERRORS********************************
-// insert overrides previous value if duplicate; not an error
-
-/**
- * Separate chaining table implementation of hash tables.
- * Note that all "matching" is based on the equals method.
- * 
- * @author Mark Allen Weiss
- */
 public class TablaHashAbierto {
     /**
-     * Construct the hash table.
+     * Constructor de la tabla hash.
      */
     public TablaHashAbierto() {
-        this(DEFAULT_TABLE_SIZE);
+        this(TAMANIO_TABLA_DEFAULT);
     }
 
     /**
-     * Construct the hash table.
+     * Construye la tabla Hash.
      * 
-     * @param size approximate table size.
+     * @param tamanio tamaño aproximado de la tabla.
      */
-    public TablaHashAbierto(int size) {
-        theLists = new LinkedList[nextPrime(size)];
-        for (int i = 0; i < theLists.length; i++)
-            theLists[i] = new LinkedList();
+    public TablaHashAbierto(int tamanio) {
+        listas = new ListaEncadenada[proximoPrimo(tamanio)];
+        for (int i = 0; i < listas.length; i++)
+            listas[i] = new ListaEncadenada();
     }
 
     /**
-     * Insert into the hash table. If the item is
-     * already present, then do nothing.
+     * Inserta el item en la tabla Hash. Si el item está presente, no hace nada.
      * 
-     * @param x the item to insert.
+     * @param x el item a ser insertado.
      */
-    public void insert(Hashable x) {
-        LinkedList whichList = theLists[x.hash(theLists.length)];
-        LinkedListItr itr = whichList.find(x);
+    public void insertar(Hashable x) {
+        ListaEncadenada enQueLista = listas[x.hash(listas.length)];
+        ListaEncadenadaItr itr = enQueLista.encontrar(x);
 
-        if (itr.isPastEnd())
-            whichList.insert(x, whichList.zeroth());
+        if (itr.fueraDeLista())
+            enQueLista.insertar(x, enQueLista.zeroth());
     }
 
     /**
-     * Remove from the hash table.
+     * Elimina el item de la tabla.
      * 
-     * @param x the item to remove.
+     * @param x es el item a eliminar.
      */
-    public void remove(Hashable x) {
-        theLists[x.hash(theLists.length)].remove(x);
+    public void eliminar(Hashable x) {
+        listas[x.hash(listas.length)].eliminar(x);
     }
 
     /**
-     * Find an item in the hash table.
+     * Busca un item dentro de la tabla.
      * 
-     * @param x the item to search for.
-     * @return the matching item, or null if not found.
+     * @param x es el item que se buscará.
+     * @return devuelve el item, si no se encuentra deuvuelve null.
      */
-    public Hashable find(Hashable x) {
-        return (Hashable) theLists[x.hash(theLists.length)].find(x).retrieve();
+    public Hashable encontrar(Hashable x) {
+        return (Hashable) listas[x.hash(listas.length)].encontrar(x).devolver();
     }
 
     /**
-     * Make the hash table logically empty.
+     * Vacía la tabla Hash logicamente
      */
-    public void makeEmpty() {
-        for (int i = 0; i < theLists.length; i++)
-            theLists[i].makeEmpty();
+    public void vaciar() {
+        for (int i = 0; i < listas.length; i++)
+            listas[i].vaciar();
     }
 
+    private static final int TAMANIO_TABLA_DEFAULT = 11;
+
+    // Lista de arrays
+    private ListaEncadenada[] listas;
+
     /**
-     * A hash routine for String objects.
+     * Metodo interno para encontrar el proximo numero primo mayor que n.
      * 
-     * @param key       the String to hash.
-     * @param tableSize the size of the hash table.
-     * @return the hash value.
+     * @param n el numero inical (tiene que ser positivo).
+     * @return un numero primo igual o mayor que n.
      */
-    public static int hash(String key, int tableSize) {
-        int hashVal = 0;
-
-        for (int i = 0; i < key.length(); i++)
-            hashVal = 37 * hashVal + key.charAt(i);
-
-        hashVal %= tableSize;
-        if (hashVal < 0)
-            hashVal += tableSize;
-
-        return hashVal;
-    }
-
-    private static final int DEFAULT_TABLE_SIZE = 101;
-
-    /** The array of Lists. */
-    private LinkedList[] theLists;
-
-    /**
-     * Internal method to find a prime number at least as large as n.
-     * 
-     * @param n the starting number (must be positive).
-     * @return a prime number larger than or equal to n.
-     */
-    private static int nextPrime(int n) {
+    private static int proximoPrimo(int n) {
         if (n % 2 == 0)
             n++;
 
-        for (; !isPrime(n); n += 2)
+        for (; !esPrimo(n); n += 2)
             ;
 
         return n;
     }
 
     /**
-     * Internal method to test if a number is prime.
-     * Not an efficient algorithm.
+     * Método interno para probar que un número es primo
      * 
-     * @param n the number to test.
-     * @return the result of the test.
+     * @param n es el número a probar.
+     * @return el resutlado del test.
      */
-    private static boolean isPrime(int n) {
+    private static boolean esPrimo(int n) {
         if (n == 2 || n == 3)
             return true;
 
@@ -141,29 +106,4 @@ public class TablaHashAbierto {
 
         return true;
     }
-
-    // Simple main
-    public static void main(String[] args) {
-        TablaHashAbierto H = new TablaHashAbierto();
-
-        final int NUMS = 4000;
-        final int GAP = 37;
-
-        System.out.println("Checking... (no more output means success)");
-
-        for (int i = GAP; i != 0; i = (i + GAP) % NUMS)
-            H.insert(new MyInteger(i));
-        for (int i = 1; i < NUMS; i += 2)
-            H.remove(new MyInteger(i));
-
-        for (int i = 2; i < NUMS; i += 2)
-            if (((MyInteger) (H.find(new MyInteger(i)))).intValue() != i)
-                System.out.println("Find fails " + i);
-
-        for (int i = 1; i < NUMS; i += 2) {
-            if (H.find(new MyInteger(i)) != null)
-                System.out.println("OOPS!!! " + i);
-        }
-    }
-
 }
