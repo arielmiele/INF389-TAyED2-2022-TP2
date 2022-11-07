@@ -131,12 +131,64 @@ public class Main {
         String dato;
         dato = entradaScan.nextLine();
 
+        int opcionMenu;
+        boolean flag;
+
         if (claseHash == TablaHashAbierto.class) {
-            TablaHashAbierto TH = new TablaHashAbierto(Integer.parseInt(dato));
+            // Selección del caso Tabla Hash Abierto
+            // Creación de la tabla con hash abierto
+            TablaHashAbierto THA = new TablaHashAbierto(Integer.parseInt(dato));
+            do {
+                // Imprime menú y retorna selección
+                opcionMenu = imprimirMenu();
+                switch (opcionMenu) {
+                    // Ingreso de Dato
+                    case 1:
+                        do {
+                            flag = false;
+                            System.out.println("\nIngrese el valor que se desea ingresar en la tabla (6 digitos): ");
+                            dato = entradaScan.nextLine();
+                            THA.insertar(Integer.parseInt(dato));
+                            System.out.println("\nEl dato ha sido ingresado a la tabla.\n");
+                        } while (flag);
+                        break;
+                    // Buscar el elemento
+                    case 2:
+                        do {
+                            flag = false;
+
+                        } while (flag);
+                        break;
+                    // Borrar el elemento
+                    case 3:
+                        do {
+                            flag = false;
+
+                        } while (flag);
+                        break;
+                    // Volver atrás
+                    case 4:
+                        do {
+                            flag = false;
+
+                        } while (flag);
+                        break;
+                }
+            } while (opcionMenu != 4);
+
         } else if (claseHash == TablaHashCuadratica.class) {
+            // Selección del caso Tabla Hash Sondeo Cuadrático
+            // Creación de la tabla con hash sondeo cuadratico
             TablaHashCuadratica TH = new TablaHashCuadratica(Integer.parseInt(dato));
+            // Imprime menú y retorna selección
+            opcionMenu = imprimirMenu();
+
         } else if (claseHash == TablaHashLineal.class) {
+            // Selección del caso Tabla Hash Sondeo Lineal
+            // Creación de la tabla con hash sondeo lineal
             TablaHashLineal TH = new TablaHashLineal(Integer.parseInt(dato));
+            // Imprime menú y retorna selección
+            opcionMenu = imprimirMenu();
         }
 
         int opcion;

@@ -13,7 +13,7 @@ package EstructurasDatos;
  * Nodo encabezado.
  */
 
-public class ListaEncadenadaItr {
+public class ListaEncadenadaItr<AnyType> {
     /**
      * Constructor del iterador de la lista
      * 

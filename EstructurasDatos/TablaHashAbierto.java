@@ -7,7 +7,10 @@
  */
 package EstructurasDatos;
 
-public class TablaHashAbierto {
+import java.util.LinkedList;
+import java.util.List;
+
+public class TablaHashAbierto<AnyType> {
     /**
      * Constructor de la tabla hash.
      */
@@ -21,9 +24,9 @@ public class TablaHashAbierto {
      * @param tamanio tamaño aproximado de la tabla.
      */
     public TablaHashAbierto(int tamanio) {
-        listas = new ListaEncadenada[proximoPrimo(tamanio)];
-        for (int i = 0; i < listas.length; i++)
-            listas[i] = new ListaEncadenada();
+        lasListas = new LinkedList[proximoPrimo(tamanio)];
+        for (int i = 0; i < lasListas.length; i++)
+            lasListas[i] = new LinkedList<>();
     }
 
     /**
@@ -31,12 +34,13 @@ public class TablaHashAbierto {
      * 
      * @param x el item a ser insertado.
      */
-    public void insertar(Hashable x) {
-        ListaEncadenada enQueLista = listas[x.hash(listas.length)];
-        ListaEncadenadaItr itr = enQueLista.encontrar(x);
-
-        if (itr.fueraDeLista())
-            enQueLista.insertar(x, enQueLista.zeroth());
+    public void insertar(AnyType x) {
+        List<AnyType> enQueLista = lasListas[miHash(x)];
+        if (!enQueLista.contains(x)) {
+            enQueLista.add(x);
+            if (++tamanioActual > lasListas.length)
+                rehash();
+        }
     }
 
     /**
@@ -44,8 +48,12 @@ public class TablaHashAbierto {
      * 
      * @param x es el item a eliminar.
      */
-    public void eliminar(Hashable x) {
-        listas[x.hash(listas.length)].eliminar(x);
+    public void eliminar(AnyType x) {
+        List<AnyType> enQueLista = lasListas[miHash(x)];
+        if (enQueLista.contains(x)) {
+            enQueLista.remove(x);
+            tamanioActual--;
+        }
     }
 
     /**
@@ -54,22 +62,66 @@ public class TablaHashAbierto {
      * @param x es el item que se buscará.
      * @return devuelve el item, si no se encuentra deuvuelve null.
      */
-    public Hashable encontrar(Hashable x) {
-        return (Hashable) listas[x.hash(listas.length)].encontrar(x).devolver();
+    public boolean encontrar(AnyType x) {
+        List<AnyType> enQueLista = lasListas[miHash(x)];
+        return enQueLista.contains(x);
     }
 
     /**
      * Vacía la tabla Hash logicamente
      */
     public void vaciar() {
-        for (int i = 0; i < listas.length; i++)
-            listas[i].vaciar();
+        for (int i = 0; i < lasListas.length; i++)
+            lasListas[i].clear();
+        tamanioActual = 0;
+    }
+
+    /**
+     * Rutina hash para objetos String.
+     * 
+     * @param key       la cadena a hashear
+     * @param tableSize el tamaño de la tabla hash.
+     * @return valor del hash.
+     */
+    public static int hash(String key, int tamanioTabla) {
+        int hashVal = 0;
+
+        for (int i = 0; i < key.length(); i++)
+            hashVal = 37 * hashVal + key.charAt(i);
+
+        hashVal %= tamanioTabla;
+        if (hashVal < 0)
+            hashVal += tamanioTabla;
+
+        return hashVal;
+    }
+
+    private void rehash() {
+        List<AnyType>[] listasViejas = lasListas;
+
+        lasListas = new List[proximoPrimo(2 * lasListas.length)];
+        for (int j = 0; j < lasListas.length; j++)
+            lasListas[j] = new LinkedList<>();
+
+        tamanioActual = 0;
+        for (List<AnyType> lista : listasViejas)
+            for (AnyType item : lista)
+                insertar(item);
+    }
+
+    private int miHash(AnyType x) {
+        int hashVal = x.hashCode();
+        hashVal %= lasListas.length;
+        if (hashVal < 0)
+            hashVal += lasListas.length;
+        return hashVal;
     }
 
     private static final int TAMANIO_TABLA_DEFAULT = 11;
 
     // Lista de arrays
-    private ListaEncadenada[] listas;
+    private List<AnyType>[] lasListas;
+    private int tamanioActual;
 
     /**
      * Metodo interno para encontrar el proximo numero primo mayor que n.
