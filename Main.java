@@ -67,7 +67,7 @@ public class Main {
                     "3 - Operar con tabla hash de manejo de colisiones de direccionamiento cerrado (hashing abierto)\n"
                     +
                     "4 - Ejecución de Prueba\n" +
-                    "5 - Salir");
+                    "5 - Salir\n");
 
             System.out.print(">> ");
             dato = entradaScan.nextLine();
@@ -132,6 +132,7 @@ public class Main {
         dato = entradaScan.nextLine();
 
         int opcionMenu;
+        String opcionRepetir = "SI";
         boolean flag;
 
         if (claseHash == TablaHashAbierto.class) {
@@ -146,37 +147,82 @@ public class Main {
                     case 1:
                         do {
                             flag = false;
-                            System.out.println("\nIngrese el valor que se desea ingresar en la tabla (6 digitos): ");
-                            dato = entradaScan.nextLine();
-                            THA.insertar(Integer.parseInt(dato));
-                            System.out.println("\nEl dato ha sido ingresado a la tabla.\n");
+                            do {
+                                System.out
+                                        .println("\nIngrese el valor que se desea ingresar en la tabla (6 digitos): ");
+                                dato = entradaScan.nextLine();
+                                THA.insertar(Integer.parseInt(dato));
+                                System.out.println(
+                                        "\nEl dato ha sido ingresado a la tabla. Desea ingresar otro valor? (SI/NO): \n");
+                                opcionRepetir = entradaScan.nextLine();
+                                opcionRepetir.toUpperCase();
+                                while (opcionRepetir != "SI" && opcionRepetir != "NO") {
+                                    System.out.println(
+                                            "\nOpcion incorrecta. Indique si quiere ingresar otro valor (SI/NO): ");
+                                    opcionRepetir = entradaScan.nextLine();
+                                    opcionRepetir.toUpperCase();
+                                }
+                            } while (opcionRepetir == "SI");
                         } while (flag);
                         break;
                     // Buscar el elemento
                     case 2:
                         do {
                             flag = false;
-
+                            do {
+                                System.out
+                                        .println("\nIngrese el valor que se desea buscar en la tabla (6 digitos): ");
+                                dato = entradaScan.nextLine();
+                                if (THA.encontrar(Integer.parseInt(dato))) {
+                                    System.out.println("\nSe encontro el valor " + dato
+                                            + "en la tabla hash. Desea buscar otro valor? (SI/NO): \n");
+                                    opcionRepetir = entradaScan.nextLine();
+                                    opcionRepetir.toUpperCase();
+                                    while (opcionRepetir != "SI" && opcionRepetir != "NO") {
+                                        System.out.println(
+                                                "\nOpcion incorrecta. Indique si quiere buscar otro valor (SI/NO): ");
+                                        opcionRepetir = entradaScan.nextLine();
+                                        opcionRepetir.toUpperCase();
+                                    }
+                                } else {
+                                    System.out.println(
+                                            "\nValor no encontrado en la tabla. Desea buscar otro valor? (SI/NO): ");
+                                    opcionRepetir = entradaScan.nextLine();
+                                    opcionRepetir.toUpperCase();
+                                    while (opcionRepetir != "SI" && opcionRepetir != "NO") {
+                                        System.out.println(
+                                                "\nOpcion incorrecta. Indique si quiere buscar otro valor (SI/NO): ");
+                                        opcionRepetir = entradaScan.nextLine();
+                                        opcionRepetir.toUpperCase();
+                                    }
+                                }
+                            } while (opcionRepetir == "SI");
                         } while (flag);
                         break;
                     // Borrar el elemento
                     case 3:
                         do {
                             flag = false;
-
-                        } while (flag);
-                        break;
-                    // Volver atrás
-                    case 4:
-                        do {
-                            flag = false;
-
+                            System.out.println("\nIngrese el valor que se desea borrar de la tabla (6 digitos): ");
+                            dato = entradaScan.nextLine();
+                            if (THA.encontrar(Integer.parseInt(dato))) {
+                                // Se busca el valor en la tabla, solo para indicarle al usuario si existe o no
+                                System.out.println(
+                                        "\nSe encontró el valor " + dato + " en la tabla hash. Se borrará el dato.\n");
+                                THA.eliminar(Integer.parseInt(dato));
+                                System.out.println("\nValor " + dato + " borrado.\n");
+                            } else {
+                                System.out.println(
+                                        "\nValor no encontrado en la tabla, por lo tanto no puede ser borrado.\n");
+                            }
                         } while (flag);
                         break;
                 }
             } while (opcionMenu != 4);
 
-        } else if (claseHash == TablaHashCuadratica.class) {
+        } else if (claseHash == TablaHashCuadratica.class)
+
+        {
             // Selección del caso Tabla Hash Sondeo Cuadrático
             // Creación de la tabla con hash sondeo cuadratico
             TablaHashCuadratica TH = new TablaHashCuadratica(Integer.parseInt(dato));
@@ -190,44 +236,5 @@ public class Main {
             // Imprime menú y retorna selección
             opcionMenu = imprimirMenu();
         }
-
-        int opcion;
-        boolean otro;
-        do {
-            opcion = imprimirMenu();
-            switch (opcion) {
-                case 1:
-                    do {
-                        otro = false;
-
-                    } while (otro);
-                    break;
-                case 2:
-                    do {
-                        otro = false;
-                        tabla.buscar(obtenerObjetoHasheableConLeyenda(
-                                "\n\033[1m" + "Ingrese el valor que desea buscar" + "\033[0m"));
-                        System.out.println("\n\033[1m" + "Desea buscar otro? (s/N)" + "\033[0m");
-                        System.out.print("\033[1m" + "> " + "\033[0m");
-                        if (scanInput.nextLine().toUpperCase().equals("S")) {
-                            otro = true;
-                        }
-                    } while (otro);
-                    break;
-                case 3:
-                    do {
-                        otro = false;
-                        tabla.eliminar(obtenerObjetoHasheableConLeyenda(
-                                "\n\033[1m" + "Ingrese el valor que desea eliminar" + "\033[0m"));
-                        System.out.println("\n\033[1m" + "Desea borrar otro? (s/N)" + "\033[0m");
-                        System.out.print("\033[1m" + "> " + "\033[0m");
-                        if (scanInput.nextLine().toUpperCase().equals("S")) {
-                            otro = true;
-                        }
-                    } while (otro);
-                    break;
-            }
-        } while (opcion != 4);
     }
-
 }

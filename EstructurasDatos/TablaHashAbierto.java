@@ -60,7 +60,7 @@ public class TablaHashAbierto<AnyType> {
      * Busca un item dentro de la tabla.
      * 
      * @param x es el item que se buscará.
-     * @return devuelve el item, si no se encuentra deuvuelve null.
+     * @return devuelve el item, si no se encuentra devuelve null.
      */
     public boolean encontrar(AnyType x) {
         List<AnyType> enQueLista = lasListas[miHash(x)];
